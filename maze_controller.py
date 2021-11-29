@@ -37,12 +37,13 @@ class MazeController:
     def _check_for_start_point(self, event: pygame.event):
         # press 's' and mouse click, then add start point to maze
         if event.type == pygame.MOUSEBUTTONUP:
-            self._maze.set_start(MazeLocation(row=event.pos[0], column=event.pos[1]))
+            self._maze.start = (MazeLocation(row=event.pos[0], column=event.pos[1]))
 
     def _check_for_goal_point(self, event: pygame.event):
         # press 'g' and mouse click, then add goal point to maze
         if event.type == pygame.MOUSEBUTTONUP:
-            self._maze.set_goal(MazeLocation(row=event.pos[0], column=event.pos[1]))
+            self._maze.goal = (MazeLocation(row=event.pos[0], column=event.pos[1]))
 
     def _check_for_block_point(self, event: pygame.event):
-        pass
+        if event.type == pygame.MOUSEMOTION and event.buttons[0]:
+            self._maze.block(location=MazeLocation(event.pos[0], column=event.pos[1]))
