@@ -3,9 +3,12 @@ from __future__ import annotations
 from enum import Enum
 from heapq import heappop, heappush
 from math import sqrt
-from typing import Tuple, Callable, List
+from typing import Tuple, Callable, List, NamedTuple
 
-from maze import MazeLocation
+
+class MazeLocation(NamedTuple):
+    row: int
+    column: int
 
 
 class Colors(Tuple, Enum):

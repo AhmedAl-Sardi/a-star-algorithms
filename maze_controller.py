@@ -2,7 +2,8 @@ from enum import Enum
 
 import pygame
 
-from maze import Maze, MazeLocation
+from maze import Maze
+from utils import MazeLocation
 
 
 class MazeControllerCommand(str, Enum):

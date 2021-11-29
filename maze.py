@@ -1,13 +1,8 @@
-from typing import NamedTuple, List
+from typing import List
 
 import pygame
 
-from utils import Colors
-
-
-class MazeLocation(NamedTuple):
-    row: int
-    column: int
+from utils import Colors, MazeLocation
 
 
 class Maze:
@@ -45,8 +40,8 @@ class Maze:
             list_of_neighbor.append(MazeLocation(location.row - 1, location.column))
         return list_of_neighbor
 
-    def mark(self):
-        pass
+    def mark(self, location: MazeLocation, color: Colors) -> None:
+        self._grid[location.row][location.column] = color
 
     def draw(self):
         # vertical line
@@ -120,4 +115,4 @@ class Maze:
         rect_x = (x * self._grid_size) + self._x_offset
         rect_y = (y * self._grid_size) + self._y_offset
         pygame.draw.rect(self.display_surface, value,
-                         (rect_x, rect_y, self._grid_size, self._grid_size))
+                         (rect_x, rect_y, self._grid_size - 1, self._grid_size - 1))
