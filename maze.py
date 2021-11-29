@@ -72,6 +72,9 @@ class Maze:
     @start.setter
     def start(self, location: MazeLocation):
         start: MazeLocation = self._normalize_location(location=location)
+        # Todo: Check for boundary before assign
+        if not self._check_boundary(location=start):
+            return None
         self._start = start
         # Todo: check if there are start point in grid before adding the new one
         self._change_location_state(from_state=Colors.START, to=Colors.WHITE)
@@ -84,13 +87,18 @@ class Maze:
     @goal.setter
     def goal(self, location: MazeLocation):
         goal: MazeLocation = self._normalize_location(location=location)
+        # Todo: check for boundary before assign
+        if not self._check_boundary(location=goal):
+            return None
         self._goal = goal
-        # Todo: check if there are goal in grid before adding the goal
         self._change_location_state(from_state=Colors.GOAL, to=Colors.WHITE)
         self._grid[self._goal.row][self._goal.column] = Colors.GOAL
 
     def block(self, location: MazeLocation):
         block: MazeLocation = self._normalize_location(location=location)
+        # Todo: check for boundary before assign
+        if not self._check_boundary(location=block):
+            return None
         if self._grid[block.row][block.column] == Colors.WHITE:
             self._grid[block.row][block.column] = Colors.BLACK
 
@@ -115,4 +123,9 @@ class Maze:
         rect_x = (x * self._grid_size) + self._x_offset
         rect_y = (y * self._grid_size) + self._y_offset
         pygame.draw.rect(self.display_surface, value,
-                         (rect_x, rect_y, self._grid_size - 1, self._grid_size - 1))
+                         (rect_x + 1, rect_y + 1, self._grid_size - 1, self._grid_size - 1))
+
+    def _check_boundary(self, location: MazeLocation):
+        if 0 <= location.row < self._rows and 0 <= location.column < self._columns:
+            return True
+        return False

@@ -49,7 +49,7 @@ class Node:
 
 def euclidean_distance(goal: MazeLocation) -> Callable[[MazeLocation], float]:
     def distance(location: MazeLocation):
-        return sqrt((goal.row - location.row) ** 2 + (goal.column + location.column) ** 2)
+        return sqrt((goal.row - location.row) ** 2 + (goal.column - location.column) ** 2)
 
     return distance
 

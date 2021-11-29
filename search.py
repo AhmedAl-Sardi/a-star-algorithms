@@ -1,3 +1,4 @@
+import time
 from collections import Callable
 from typing import Dict, List, Union
 
@@ -5,7 +6,9 @@ import pygame
 
 from maze import Maze
 from utils import (PriorityQueue, Node,
-                   euclidean_distance, path_to_node, MazeLocation, Colors)
+                   euclidean_distance, path_to_node,
+                   MazeLocation, Colors,
+                   manhattan_distance)
 
 
 class Search:
@@ -16,10 +19,18 @@ class Search:
         # When the user press 'r', grab start location, and heuristic function then start A*
         start: MazeLocation = self._maze.start
         goal_checking: Callable[[MazeLocation], bool] = self._maze.check_goal
-        heuristic: Callable[[MazeLocation], float] = euclidean_distance(self._maze.goal)
+        heuristic_manhattan: Callable[[MazeLocation], float] = manhattan_distance(self._maze.goal)
+        heuristic_euclidean: Callable[[MazeLocation], float] = euclidean_distance(self._maze.goal)
         successor: Callable[[MazeLocation], List[MazeLocation]] = self._maze.successor
+
+        t1 = time.perf_counter()
         solution: Node = self._search(start=start, goal_checking=goal_checking,
-                                      heuristic=heuristic, successor=successor)
+                                      heuristic=heuristic_manhattan, successor=successor)
+        t2 = time.perf_counter()
+        print(f"time to take: {t2 - t1}")
+        # solution2: Node = self._search(start=start, goal_checking=goal_checking,
+        #                                heuristic=heuristic_euclidean, successor=successor)
+
         if not solution:
             print("No solution found")
             return
