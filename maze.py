@@ -29,8 +29,8 @@ class Maze:
         self._grid = [[Colors.WHITE for _ in range(self._columns)]
                       for _ in range(self._rows)]
 
-    def check_goal(self):
-        pass
+    def check_goal(self, location: MazeLocation) -> bool:
+        return self._goal == location
 
     def successor(self, location: MazeLocation) -> List[MazeLocation]:
         list_of_neighbor: List[MazeLocation] = []
@@ -48,16 +48,12 @@ class Maze:
     def mark(self):
         pass
 
-    def update(self):
-        pass
-
     def draw(self):
         # vertical line
         self._draw_vertical_line()
         # horizontal line
         self._draw_horizontal_line()
 
-        # Todo: Draw all rect in these occupied places
         self._draw_occupied_place()
 
     def _draw_horizontal_line(self):
