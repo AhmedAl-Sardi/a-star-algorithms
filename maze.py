@@ -41,7 +41,9 @@ class Maze:
         return list_of_neighbor
 
     def mark(self, location: MazeLocation, color: Colors) -> None:
-        self._grid[location.row][location.column] = color
+        value = self._grid[location.row][location.column]
+        if value != Colors.START and value != Colors.GOAL:
+            self._grid[location.row][location.column] = color
 
     def draw(self):
         # vertical line
@@ -133,3 +135,9 @@ class Maze:
     def erase_maze(self):
         self._grid = [[Colors.WHITE for _ in range(self._columns)]
                       for _ in range(self._rows)]
+
+    def erase_explore_and_path(self):
+        for i, row in enumerate(self._grid):
+            for j, value in enumerate(row):
+                if value == Colors.EXPLORE or value == Colors.PATH:
+                    self._grid[i][j] = Colors.WHITE

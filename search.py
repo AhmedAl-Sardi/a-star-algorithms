@@ -18,7 +18,7 @@ class Search:
 
     def start(self):
         # When the user press 'r', grab start location, and heuristic function then start A*
-        # Todo: check before start that there are previous attempt, and there are start and goal points
+        # check before start that there are previous attempt, and there are start and goal points
         if not self._maze.goal or not self._maze.start:
             print("Enter start and goal points first")
             return None

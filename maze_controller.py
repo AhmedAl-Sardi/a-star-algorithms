@@ -11,6 +11,7 @@ class MazeControllerCommand(str, Enum):
     START = "START"
     GOAL = "GOAL"
     ERASE = "ERASE"
+    ERASE_EXPLORE_AND_PATH = "ERASE EXPLORE AND PATH"
 
 
 class MazeController:
@@ -23,14 +24,7 @@ class MazeController:
         # Loop for event and allow user to:
         for event in events:
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_s:
-                    self._current_command = MazeControllerCommand.START
-                if event.key == pygame.K_g:
-                    self._current_command = MazeControllerCommand.GOAL
-                if event.key == pygame.K_b:
-                    self._current_command = MazeControllerCommand.BLOCK
-                if event.key == pygame.K_e:
-                    self._current_command = MazeControllerCommand.ERASE
+                self._change_current_command(event)
             if self._current_command == MazeControllerCommand.START:
                 self._check_for_start_point(event=event)
             if self._current_command == MazeControllerCommand.GOAL:
@@ -40,6 +34,20 @@ class MazeController:
             if self._current_command == MazeControllerCommand.ERASE:
                 self._erase_maze()
                 self._current_command = MazeControllerCommand.START
+            if self._current_command == MazeControllerCommand.ERASE_EXPLORE_AND_PATH:
+                self._erase_explore_and_path()
+
+    def _change_current_command(self, event):
+        if event.key == pygame.K_s:
+            self._current_command = MazeControllerCommand.START
+        if event.key == pygame.K_g:
+            self._current_command = MazeControllerCommand.GOAL
+        if event.key == pygame.K_b:
+            self._current_command = MazeControllerCommand.BLOCK
+        if event.key == pygame.K_e:
+            self._current_command = MazeControllerCommand.ERASE
+        if event.key == pygame.K_p:
+            self._current_command = MazeControllerCommand.ERASE_EXPLORE_AND_PATH
 
     def _check_for_start_point(self, event: pygame.event):
         # press 's' and mouse click, then add start point to maze
@@ -57,3 +65,7 @@ class MazeController:
 
     def _erase_maze(self):
         self._maze.erase_maze()
+
+    def _erase_explore_and_path(self):
+        self._maze.erase_explore_and_path()
+        self._current_command = MazeControllerCommand.BLOCK
