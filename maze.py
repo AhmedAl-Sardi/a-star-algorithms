@@ -38,6 +38,23 @@ class Maze:
             list_of_neighbor.append(MazeLocation(location.row, location.column + 1))
         if location.row - 1 >= 0 and self._grid[location.row - 1][location.column] != Colors.BLACK:
             list_of_neighbor.append(MazeLocation(location.row - 1, location.column))
+        # Check for diagonal neighbor
+        # top-right
+        if (location.column - 1 >= 0 and location.row + 1 < self._rows) and self._grid[
+            location.row + 1][location.column - 1] != Colors.BLACK:
+            list_of_neighbor.append(MazeLocation(location.row + 1, location.column - 1))
+        # bottom-right
+        if (location.column + 1 < self._columns and location.row + 1 < self._rows) and self._grid[
+            location.row + 1][location.column + 1] != Colors.BLACK:
+            list_of_neighbor.append(MazeLocation(location.row + 1, location.column + 1))
+        # bottom - left
+        if (location.column + 1 < self._columns and location.row - 1 >= 0) and self._grid[
+            location.row - 1][location.column + 1] != Colors.BLACK:
+            list_of_neighbor.append(MazeLocation(location.row - 1, location.column + 1))
+        # top-left
+        if (location.column - 1 >= 0 and location.row - 1 >= 0) and self._grid[
+            location.row - 1][location.column - 1] != Colors.BLACK:
+            list_of_neighbor.append(MazeLocation(location.row - 1, location.column - 1))
         return list_of_neighbor
 
     def mark(self, location: MazeLocation, color: Colors) -> None:
