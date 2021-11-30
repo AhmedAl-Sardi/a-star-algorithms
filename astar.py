@@ -6,15 +6,21 @@ import pygame
 
 from maze import Maze
 from utils import (PriorityQueue, Node,
-                   euclidean_distance, path_to_node,
+                   path_to_node,
                    MazeLocation, Colors)
 
 
-class Search:
-    def __init__(self, maze: Maze):
-        self._maze: Maze = maze
+class AStar:
+    def __init__(self, heuristic: Callable[[MazeLocation], float],
+                 successor: Callable[[MazeLocation], List[MazeLocation]],
+                 goal_check: Callable[[MazeLocation], bool],
+                 start: MazeLocation, maze: Maze):
         self._solution: Node = None
-        self._heuristic: Callable[[MazeLocation], Callable] = euclidean_distance
+        self._heuristic: Callable[[MazeLocation], float] = heuristic
+        self._successor = successor
+        self._goal_check = goal_check
+        self._start = start
+        self._maze: Maze = maze
 
     @property
     def heuristic(self):
@@ -25,19 +31,9 @@ class Search:
         self._heuristic = heuristic
 
     def start(self):
-        # When the user press 'r', grab start location, and heuristic function then start A*
-        # check before start that there are previous attempt, and there are start and goal points
-        if not self._maze.goal or not self._maze.start:
-            print("Enter start and goal points first")
-            return None
-        start: MazeLocation = self._maze.start
-        goal_checking: Callable[[MazeLocation], bool] = self._maze.check_goal
-        heuristic: Callable[[MazeLocation], float] = self._heuristic(self._maze.goal)
-        successor: Callable[[MazeLocation], List[MazeLocation]] = self._maze.successor
-
         t1 = time.perf_counter()
-        self._solution: Node = self._search(start=start, goal_checking=goal_checking,
-                                            heuristic=heuristic, successor=successor)
+        self._solution: Node = self._search(start=self._start, goal_checking=self._goal_check,
+                                            heuristic=self._heuristic, successor=self._successor)
         t2 = time.perf_counter()
         print(f"time to take: {t2 - t1}")
         # solution2: Node = self._search(start=start, goal_checking=goal_checking,
