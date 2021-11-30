@@ -3,7 +3,7 @@ from enum import Enum
 import pygame
 
 from maze import Maze
-from utils import MazeLocation
+from utils import MazeLocation, Colors
 
 
 class MazeControllerCommand(str, Enum):
@@ -62,6 +62,8 @@ class MazeController:
     def _check_for_block_point(self, event: pygame.event):
         if event.type == pygame.MOUSEMOTION and event.buttons[0]:
             self._maze.block(location=MazeLocation(event.pos[0], column=event.pos[1]))
+        if event.type == pygame.MOUSEBUTTONUP:
+            self._maze.block(location=MazeLocation(row=event.pos[0], column=event.pos[1]), to=Colors.WHITE)
 
     def _erase_maze(self):
         self._maze.erase_maze()

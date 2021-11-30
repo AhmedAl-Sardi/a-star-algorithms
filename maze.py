@@ -113,13 +113,13 @@ class Maze:
         self._change_location_state(from_state=Colors.GOAL, to=Colors.WHITE)
         self._grid[self._goal.row][self._goal.column] = Colors.GOAL
 
-    def block(self, location: MazeLocation):
+    def block(self, location: MazeLocation, to: Colors = Colors.BLACK):
         block: MazeLocation = self._normalize_location(location=location)
         # Todo: check for boundary before assign
         if not self._check_boundary(location=block):
             return None
-        if self._grid[block.row][block.column] == Colors.WHITE:
-            self._grid[block.row][block.column] = Colors.BLACK
+        if self._grid[block.row][block.column] == Colors.WHITE or self._grid[block.row][block.column] == Colors.BLACK:
+            self._grid[block.row][block.column] = to
 
     def _change_location_state(self, from_state: Colors, to: Colors):
         for i, row in enumerate(self._grid):
