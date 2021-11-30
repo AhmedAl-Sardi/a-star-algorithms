@@ -10,6 +10,7 @@ class MazeControllerCommand(str, Enum):
     BLOCK = "BLOCK"
     START = "START"
     GOAL = "GOAL"
+    ERASE = "ERASE"
 
 
 class MazeController:
@@ -28,12 +29,17 @@ class MazeController:
                     self._current_command = MazeControllerCommand.GOAL
                 if event.key == pygame.K_b:
                     self._current_command = MazeControllerCommand.BLOCK
+                if event.key == pygame.K_e:
+                    self._current_command = MazeControllerCommand.ERASE
             if self._current_command == MazeControllerCommand.START:
                 self._check_for_start_point(event=event)
             if self._current_command == MazeControllerCommand.GOAL:
                 self._check_for_goal_point(event=event)
             if self._current_command == MazeControllerCommand.BLOCK:
                 self._check_for_block_point(event=event)
+            if self._current_command == MazeControllerCommand.ERASE:
+                self._erase_maze()
+                self._current_command = MazeControllerCommand.START
 
     def _check_for_start_point(self, event: pygame.event):
         # press 's' and mouse click, then add start point to maze
@@ -48,3 +54,6 @@ class MazeController:
     def _check_for_block_point(self, event: pygame.event):
         if event.type == pygame.MOUSEMOTION and event.buttons[0]:
             self._maze.block(location=MazeLocation(event.pos[0], column=event.pos[1]))
+
+    def _erase_maze(self):
+        self._maze.erase_maze()

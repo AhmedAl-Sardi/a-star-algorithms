@@ -14,9 +14,14 @@ from utils import (PriorityQueue, Node,
 class Search:
     def __init__(self, maze: Maze):
         self._maze: Maze = maze
+        self._solution: Node = None
 
     def start(self):
         # When the user press 'r', grab start location, and heuristic function then start A*
+        # Todo: check before start that there are previous attempt, and there are start and goal points
+        if not self._maze.goal or not self._maze.start:
+            print("Enter start and goal points first")
+            return None
         start: MazeLocation = self._maze.start
         goal_checking: Callable[[MazeLocation], bool] = self._maze.check_goal
         heuristic_manhattan: Callable[[MazeLocation], float] = manhattan_distance(self._maze.goal)
@@ -24,17 +29,17 @@ class Search:
         successor: Callable[[MazeLocation], List[MazeLocation]] = self._maze.successor
 
         t1 = time.perf_counter()
-        solution: Node = self._search(start=start, goal_checking=goal_checking,
-                                      heuristic=heuristic_manhattan, successor=successor)
+        self._solution: Node = self._search(start=start, goal_checking=goal_checking,
+                                            heuristic=heuristic_euclidean, successor=successor)
         t2 = time.perf_counter()
         print(f"time to take: {t2 - t1}")
         # solution2: Node = self._search(start=start, goal_checking=goal_checking,
         #                                heuristic=heuristic_euclidean, successor=successor)
 
-        if not solution:
+        if not self._solution:
             print("No solution found")
             return
-        paths: List[MazeLocation] = path_to_node(solution)
+        paths: List[MazeLocation] = path_to_node(self._solution)
         for location in paths:
             self._maze.mark(location=location, color=Colors.PATH)
             self._maze.draw()

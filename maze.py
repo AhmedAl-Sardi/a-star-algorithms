@@ -129,3 +129,7 @@ class Maze:
         if 0 <= location.row < self._rows and 0 <= location.column < self._columns:
             return True
         return False
+
+    def erase_maze(self):
+        self._grid = [[Colors.WHITE for _ in range(self._columns)]
+                      for _ in range(self._rows)]
