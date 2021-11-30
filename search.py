@@ -7,14 +7,22 @@ import pygame
 from maze import Maze
 from utils import (PriorityQueue, Node,
                    euclidean_distance, path_to_node,
-                   MazeLocation, Colors,
-                   manhattan_distance)
+                   MazeLocation, Colors)
 
 
 class Search:
     def __init__(self, maze: Maze):
         self._maze: Maze = maze
         self._solution: Node = None
+        self._heuristic: Callable[[MazeLocation], Callable] = euclidean_distance
+
+    @property
+    def heuristic(self):
+        return self._heuristic
+
+    @heuristic.setter
+    def heuristic(self, heuristic):
+        self._heuristic = heuristic
 
     def start(self):
         # When the user press 'r', grab start location, and heuristic function then start A*
@@ -24,13 +32,12 @@ class Search:
             return None
         start: MazeLocation = self._maze.start
         goal_checking: Callable[[MazeLocation], bool] = self._maze.check_goal
-        heuristic_manhattan: Callable[[MazeLocation], float] = manhattan_distance(self._maze.goal)
-        heuristic_euclidean: Callable[[MazeLocation], float] = euclidean_distance(self._maze.goal)
+        heuristic: Callable[[MazeLocation], float] = self._heuristic(self._maze.goal)
         successor: Callable[[MazeLocation], List[MazeLocation]] = self._maze.successor
 
         t1 = time.perf_counter()
         self._solution: Node = self._search(start=start, goal_checking=goal_checking,
-                                            heuristic=heuristic_euclidean, successor=successor)
+                                            heuristic=heuristic, successor=successor)
         t2 = time.perf_counter()
         print(f"time to take: {t2 - t1}")
         # solution2: Node = self._search(start=start, goal_checking=goal_checking,
