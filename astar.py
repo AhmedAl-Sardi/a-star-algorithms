@@ -32,12 +32,9 @@ class AStar:
 
     def start(self):
         t1 = time.perf_counter()
-        self._solution: Node = self._search(start=self._start, goal_checking=self._goal_check,
-                                            heuristic=self._heuristic, successor=self._successor)
+        self._solution: Node = self._search()
         t2 = time.perf_counter()
         print(f"time to take: {t2 - t1}")
-        # solution2: Node = self._search(start=start, goal_checking=goal_checking,
-        #                                heuristic=heuristic_euclidean, successor=successor)
 
         if not self._solution:
             print("No solution found")
@@ -48,14 +45,12 @@ class AStar:
             self._maze.draw()
             pygame.display.update()
 
-    def _search(self, start: MazeLocation, goal_checking: Callable[[MazeLocation], bool],
-                heuristic: Callable[[MazeLocation], float],
-                successor: Callable[[MazeLocation], List[MazeLocation]]) -> Union[Node, None]:
+    def _search(self) -> Union[Node, None]:
         # A*
         fringe: PriorityQueue = PriorityQueue()
-        start = Node(location=start, parent=None, cost=0, heuristic=heuristic(start))
+        start = Node(location=self._start, parent=None, cost=0, heuristic=self._heuristic(self._start))
         fringe.push(start)
-        explored: Dict[MazeLocation, int] = {start: 0}
+        explored: Dict[MazeLocation, int] = {self._start: 0}
         while not fringe.empty:
             current_node: Node = fringe.pop()
             current_location: MazeLocation = current_node.location
@@ -63,12 +58,12 @@ class AStar:
             self._maze.mark(location=current_location, color=Colors.EXPLORE)
             self._maze.draw()
             pygame.display.update()
-            if goal_checking(current_location):
+            if self._goal_check(current_location):
                 return current_node
-            for child in successor(current_location):
-                new_cost = current_node.cost
+            for child in self._successor(current_location):
+                new_cost = current_node.cost + 1
                 if child not in explored or explored[child] > new_cost:
                     fringe.push(Node(location=child, parent=current_node,
-                                     cost=new_cost, heuristic=heuristic(child)))
+                                     cost=new_cost, heuristic=self._heuristic(child)))
                     explored[child] = new_cost
         return None
