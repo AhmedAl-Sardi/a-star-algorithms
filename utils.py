@@ -46,6 +46,9 @@ class Node:
     def __lt__(self, other: Node):
         return (self.cost + self.heuristic) < (other.cost + other.heuristic)
 
+    def __str__(self):
+        return f"{self.location}: {self.cost + self.heuristic}"
+
 
 def euclidean_distance(goal: MazeLocation) -> Callable[[MazeLocation], float]:
     def distance(location: MazeLocation):
