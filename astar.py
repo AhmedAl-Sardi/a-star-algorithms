@@ -15,12 +15,14 @@ class AStar:
                  successor: Callable[[MazeLocation], List[MazeLocation]],
                  goal_check: Callable[[MazeLocation], bool],
                  start: MazeLocation, maze: Maze):
-        self._solution: Node = None
         self._heuristic: Callable[[MazeLocation], float] = heuristic
         self._successor = successor
         self._goal_check = goal_check
         self._start = start
         self._maze: Maze = maze
+        self._solution: Union[Node, None] = None
+        self._time: float = 0.0
+        self._len_of_path: int = 0
 
     @property
     def heuristic(self):
@@ -34,12 +36,14 @@ class AStar:
         t1 = time.perf_counter()
         self._solution: Node = self._search()
         t2 = time.perf_counter()
+        self._time = t2 - t1
         print(f"time to take: {t2 - t1}")
 
         if not self._solution:
             print("No solution found")
             return
         paths: List[MazeLocation] = path_to_node(self._solution)
+        self._len_of_path = len(paths)
         for location in paths:
             self._maze.mark(location=location, color=Colors.PATH)
             self._maze.draw()
@@ -67,3 +71,11 @@ class AStar:
                                      cost=new_cost, heuristic=self._heuristic(child)))
                     explored[child] = new_cost
         return None
+
+    @property
+    def time(self):
+        return self._time
+
+    @property
+    def len_of_path(self):
+        return self._len_of_path

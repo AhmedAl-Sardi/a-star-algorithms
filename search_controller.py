@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, Union
 
 import pygame
 
@@ -13,6 +13,7 @@ class SearchController:
         self.display_surface = display_surface
         self._heuristic: Callable[[MazeLocation], Callable[[MazeLocation], float]] = euclidean_distance
         self._font = pygame.font.SysFont("roboto", 24)
+        self._a_star: Union[AStar, None] = None
 
         self._heuristic_panel = pygame.draw.rect(self.display_surface, Colors.BLACK, (0, 0, 800, 200))
         self._statistic_panel = pygame.draw.rect(self.display_surface, Colors.BLACK, (800, 0, 200, 1000))
@@ -25,9 +26,13 @@ class SearchController:
         self._manhattan_rect = self._manhattan_text.get_rect()
         self._manhattan_rect.topleft = (self._euclidean_rect.right + 10, 135)
 
-        self._statistic_text = self._font.render("Statistic", True, Colors.WHITE)
-        self._statistic_rect = self._statistic_text.get_rect()
-        self._statistic_rect.topright = (self._statistic_panel.right - 30, 35)
+        self._time_text = self._font.render(f"Time: {0}", True, Colors.WHITE)
+        self._time_rect = self._time_text.get_rect()
+        self._time_rect.topleft = (self._manhattan_rect.right + 30, 135)
+
+        self._length_of_path_text = self._font.render(f"Length: {0}", True, Colors.WHITE)
+        self._length_of_path_rect = self._length_of_path_text.get_rect()
+        self._length_of_path_rect.topleft = (self._manhattan_rect.right + 30, 35)
 
     def draw(self):
         # Draw rect for choosing heuristic
@@ -57,12 +62,21 @@ class SearchController:
                          (self._manhattan_rect.right + 5, 0),
                          (self._manhattan_rect.right + 5, 200), 2)
 
+        if self._a_star:
+            self._time_text = self._font.render(f"Time: {round(self._a_star.time, 3)}", True, Colors.WHITE)
+            self._length_of_path_text = self._font.render(f"Length: {self._a_star.len_of_path}", True, Colors.WHITE)
+        else:
+            self._length_of_path_text = self._font.render(f"Length: {0}", True, Colors.WHITE)
+            self._time_text = self._font.render(f"Time: {0}", True, Colors.WHITE)
+
         self.display_surface.blit(self._euclidean_text, self._euclidean_rect)
         self.display_surface.blit(self._manhattan_text, self._manhattan_rect)
         self.display_surface.blit(heuristic_text, heuristic_rect)
+        self.display_surface.blit(self._time_text, self._time_rect)
+        self.display_surface.blit(self._length_of_path_text, self._length_of_path_rect)
 
     def _run_search(self):
         heuristic = self._heuristic(self._maze.goal)
-        a_star = AStar(heuristic=heuristic, successor=self._maze.successor,
-                       goal_check=self._maze.check_goal, start=self._maze.start, maze=self._maze)
-        a_star.start()
+        self._a_star = AStar(heuristic=heuristic, successor=self._maze.successor,
+                             goal_check=self._maze.check_goal, start=self._maze.start, maze=self._maze)
+        self._a_star.start()
