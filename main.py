@@ -8,7 +8,7 @@ from utils import Colors
 # init
 
 pygame.init()
-WIDTH = 1000
+WIDTH = 1200
 HEIGHT = 800
 display_surface = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("A Star Algorithms")
@@ -16,7 +16,7 @@ pygame.display.set_caption("A Star Algorithms")
 FPS = 60
 clock = pygame.time.Clock()
 
-maze: Maze = Maze(rows=600, columns=800, grid_size=20,
+maze: Maze = Maze(rows=600, columns=1200, grid_size=20,
                   x_offset=0, y_offset=200, display_surface=display_surface)
 maze_controller: MazeController = MazeController(maze=maze, display_surface=display_surface)
 search_controller: SearchController = SearchController(maze=maze, display_surface=display_surface)
