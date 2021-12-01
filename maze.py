@@ -28,7 +28,7 @@ class Maze:
     def check_goal(self, location: MazeLocation) -> bool:
         return self._goal == location
 
-    def successor(self, location: MazeLocation) -> List[MazeLocation]:
+    def successor(self, location: MazeLocation, allow_diagonal=False) -> List[MazeLocation]:
         list_of_neighbor: List[MazeLocation] = []
         # the order: Top, Right, Bottom, Left
         if location.column - 1 >= 0 and self._grid[location.row][location.column - 1] != Colors.BLACK:
@@ -39,7 +39,9 @@ class Maze:
             list_of_neighbor.append(MazeLocation(location.row, location.column + 1))
         if location.row - 1 >= 0 and self._grid[location.row - 1][location.column] != Colors.BLACK:
             list_of_neighbor.append(MazeLocation(location.row - 1, location.column))
-        # Check for diagonal neighbor
+        # Check for diagonal neighbor if possible
+        if not allow_diagonal:
+            return list_of_neighbor
         # top-right
         if (location.column - 1 >= 0 and location.row + 1 < self._rows) and self._grid[
             location.row + 1][location.column - 1] != Colors.BLACK:

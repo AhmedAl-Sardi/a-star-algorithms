@@ -12,9 +12,10 @@ from utils import (PriorityQueue, Node,
 
 class AStar:
     def __init__(self, heuristic: Callable[[MazeLocation], float],
-                 successor: Callable[[MazeLocation], List[MazeLocation]],
+                 successor: Callable[[MazeLocation, bool], List[MazeLocation]],
                  goal_check: Callable[[MazeLocation], bool],
-                 start: MazeLocation, maze: Maze):
+                 start: MazeLocation, maze: Maze,
+                 allow_diagonal: bool):
         self._heuristic: Callable[[MazeLocation], float] = heuristic
         self._successor = successor
         self._goal_check = goal_check
@@ -23,6 +24,7 @@ class AStar:
         self._solution: Union[Node, None] = None
         self._time: float = 0.0
         self._len_of_path: int = 0
+        self._allow_diagonal = allow_diagonal
 
     @property
     def heuristic(self):
@@ -64,7 +66,7 @@ class AStar:
             pygame.display.update()
             if self._goal_check(current_location):
                 return current_node
-            for child in self._successor(current_location):
+            for child in self._successor(current_location, self._allow_diagonal):
                 new_cost = current_node.cost + 1
                 if child not in explored or explored[child] > new_cost:
                     fringe.push(Node(location=child, parent=current_node,
