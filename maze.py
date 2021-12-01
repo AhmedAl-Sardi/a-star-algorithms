@@ -38,23 +38,7 @@ class Maze:
             list_of_neighbor.append(MazeLocation(location.row, location.column + 1))
         if location.row - 1 >= 0 and self._grid[location.row - 1][location.column] != Colors.BLACK:
             list_of_neighbor.append(MazeLocation(location.row - 1, location.column))
-        # Check for diagonal neighbor
-        # top-right
-        if (location.column - 1 >= 0 and location.row + 1 < self._rows) and self._grid[
-            location.row + 1][location.column - 1] != Colors.BLACK:
-            list_of_neighbor.append(MazeLocation(location.row + 1, location.column - 1))
-        # bottom-right
-        if (location.column + 1 < self._columns and location.row + 1 < self._rows) and self._grid[
-            location.row + 1][location.column + 1] != Colors.BLACK:
-            list_of_neighbor.append(MazeLocation(location.row + 1, location.column + 1))
-        # bottom - left
-        if (location.column + 1 < self._columns and location.row - 1 >= 0) and self._grid[
-            location.row - 1][location.column + 1] != Colors.BLACK:
-            list_of_neighbor.append(MazeLocation(location.row - 1, location.column + 1))
-        # top-left
-        if (location.column - 1 >= 0 and location.row - 1 >= 0) and self._grid[
-            location.row - 1][location.column - 1] != Colors.BLACK:
-            list_of_neighbor.append(MazeLocation(location.row - 1, location.column - 1))
+
         return list_of_neighbor
 
     def mark(self, location: MazeLocation, color: Colors) -> None:
@@ -69,20 +53,6 @@ class Maze:
         self._draw_horizontal_line()
 
         self._draw_occupied_place()
-
-    def _draw_horizontal_line(self):
-        # Draw Horizontal Line
-        for i in range(self._columns + 1):
-            pygame.draw.line(self.display_surface, Colors.GARY,
-                             (self._x_offset, i * self._grid_size + self._y_offset),
-                             (self._x_offset + self.x, (i * self._grid_size) + self._y_offset))
-
-    def _draw_vertical_line(self):
-        # Draw Vertical Line
-        for i in range(self._rows + 1):
-            pygame.draw.line(self.display_surface, Colors.GARY,
-                             (i * self._grid_size + self._x_offset, self._y_offset),
-                             (i * self._grid_size + self._x_offset, self._y_offset + self.y))
 
     @property
     def start(self) -> MazeLocation:
@@ -121,6 +91,30 @@ class Maze:
         if self._grid[block.row][block.column] == Colors.WHITE or self._grid[block.row][block.column] == Colors.BLACK:
             self._grid[block.row][block.column] = to
 
+    def erase_maze(self):
+        self._grid = [[Colors.WHITE for _ in range(self._columns)]
+                      for _ in range(self._rows)]
+
+    def erase_explore_and_path(self):
+        for i, row in enumerate(self._grid):
+            for j, value in enumerate(row):
+                if value == Colors.EXPLORE or value == Colors.PATH:
+                    self._grid[i][j] = Colors.WHITE
+
+    def _draw_horizontal_line(self):
+        # Draw Horizontal Line
+        for i in range(self._columns + 1):
+            pygame.draw.line(self.display_surface, Colors.GARY,
+                             (self._x_offset, i * self._grid_size + self._y_offset),
+                             (self._x_offset + self.x, (i * self._grid_size) + self._y_offset))
+
+    def _draw_vertical_line(self):
+        # Draw Vertical Line
+        for i in range(self._rows + 1):
+            pygame.draw.line(self.display_surface, Colors.GARY,
+                             (i * self._grid_size + self._x_offset, self._y_offset),
+                             (i * self._grid_size + self._x_offset, self._y_offset + self.y))
+
     def _change_location_state(self, from_state: Colors, to: Colors):
         for i, row in enumerate(self._grid):
             for j, value in enumerate(row):
@@ -148,13 +142,3 @@ class Maze:
         if 0 <= location.row < self._rows and 0 <= location.column < self._columns:
             return True
         return False
-
-    def erase_maze(self):
-        self._grid = [[Colors.WHITE for _ in range(self._columns)]
-                      for _ in range(self._rows)]
-
-    def erase_explore_and_path(self):
-        for i, row in enumerate(self._grid):
-            for j, value in enumerate(row):
-                if value == Colors.EXPLORE or value == Colors.PATH:
-                    self._grid[i][j] = Colors.WHITE
