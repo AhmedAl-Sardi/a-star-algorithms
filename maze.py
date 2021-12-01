@@ -1,3 +1,4 @@
+import random
 from typing import List
 
 import pygame
@@ -142,3 +143,9 @@ class Maze:
         if 0 <= location.row < self._rows and 0 <= location.column < self._columns:
             return True
         return False
+
+    def fill_random(self, spread: float = 0.2):
+        for i, row in enumerate(self._grid):
+            for j, value in enumerate(row):
+                if value == Colors.WHITE and random.uniform(0, 1) < spread:
+                    self._grid[i][j] = Colors.BLACK
