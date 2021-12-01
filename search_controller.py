@@ -4,7 +4,9 @@ import pygame
 
 from astar import AStar
 from maze import Maze
-from utils import Colors, manhattan_distance, euclidean_distance, MazeLocation
+from utils import (Colors, manhattan_distance,
+                   euclidean_distance, MazeLocation,
+                   chebyshev_distance)
 
 
 class SearchController:
@@ -26,13 +28,17 @@ class SearchController:
         self._manhattan_rect = self._manhattan_text.get_rect()
         self._manhattan_rect.topleft = (self._euclidean_rect.right + 10, 135)
 
+        self._chebyshev_text = self._font.render("Chebyshev distance", True, Colors.WHITE)
+        self._chebyshev_rect = self._chebyshev_text.get_rect()
+        self._chebyshev_rect.topleft = (self._manhattan_rect.right + 10, 135)
+
         self._time_text = self._font.render(f"Time: {0}", True, Colors.WHITE)
         self._time_rect = self._time_text.get_rect()
-        self._time_rect.topleft = (self._manhattan_rect.right + 30, 135)
+        self._time_rect.topleft = (self._chebyshev_rect.right + 30, 135)
 
         self._length_of_path_text = self._font.render(f"Length: {0}", True, Colors.WHITE)
         self._length_of_path_rect = self._length_of_path_text.get_rect()
-        self._length_of_path_rect.topleft = (self._manhattan_rect.right + 30, 35)
+        self._length_of_path_rect.topleft = (self._chebyshev_rect.right + 30, 35)
 
     def draw(self):
         # Draw rect for choosing heuristic
@@ -48,6 +54,8 @@ class SearchController:
                     self._heuristic = manhattan_distance
                 if self._euclidean_rect.collidepoint(event.pos):
                     self._heuristic = euclidean_distance
+                if self._chebyshev_rect.collidepoint(event.pos):
+                    self._heuristic = chebyshev_distance
 
     def _draw_heuristic_panel(self):
         self._heuristic_panel = pygame.draw.rect(self.display_surface, Colors.BLACK, (0, 0, 1200, 200))
@@ -57,10 +65,10 @@ class SearchController:
         heuristic_rect = heuristic_text.get_rect()
         heuristic_rect.topleft = (10, 35)
         pygame.draw.line(self.display_surface, Colors.WHITE, (0, 99),
-                         (self._manhattan_rect.right + 5, 99), 2)
+                         (self._chebyshev_rect.right + 5, 99), 2)
         pygame.draw.line(self.display_surface, Colors.WHITE,
-                         (self._manhattan_rect.right + 5, 0),
-                         (self._manhattan_rect.right + 5, 200), 2)
+                         (self._chebyshev_rect.right + 5, 0),
+                         (self._chebyshev_rect.right + 5, 200), 2)
 
         if self._a_star:
             self._time_text = self._font.render(f"Time: {round(self._a_star.time, 3)}", True, Colors.WHITE)
@@ -71,12 +79,21 @@ class SearchController:
 
         self.display_surface.blit(self._euclidean_text, self._euclidean_rect)
         self.display_surface.blit(self._manhattan_text, self._manhattan_rect)
+        self.display_surface.blit(self._chebyshev_text, self._chebyshev_rect)
         self.display_surface.blit(heuristic_text, heuristic_rect)
         self.display_surface.blit(self._time_text, self._time_rect)
         self.display_surface.blit(self._length_of_path_text, self._length_of_path_rect)
 
     def _run_search(self):
+        if not self._can_run():
+            print("Enter maze value first")
+            return
         heuristic = self._heuristic(self._maze.goal)
         self._a_star = AStar(heuristic=heuristic, successor=self._maze.successor,
                              goal_check=self._maze.check_goal, start=self._maze.start, maze=self._maze)
         self._a_star.start()
+
+    def _can_run(self) -> bool:
+        if not self._maze.goal or not self._maze.start:
+            return False
+        return True

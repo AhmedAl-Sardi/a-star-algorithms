@@ -64,6 +64,21 @@ def manhattan_distance(goal: MazeLocation) -> Callable[[MazeLocation], float]:
     return distance
 
 
+def chebyshev_distance(goal: MazeLocation) -> Callable[[MazeLocation], float]:
+    def distance(location: MazeLocation):
+        """
+        D * (dx + dy) + (D2 - 2 * D) * min(dx, dy)
+        D and D2 are cost, which in our case is 1
+        :param location:
+        :return: float
+        """
+        dx = abs(goal.row - location.row)
+        dy = abs(goal.column - location.column)
+        return (dx + dy) + (-1) * min(dx, dy)
+
+    return distance
+
+
 def path_to_node(node: Node) -> List[MazeLocation]:
     path: List[MazeLocation] = []
     while node is not None:
