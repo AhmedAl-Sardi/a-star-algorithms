@@ -11,7 +11,7 @@ class MazeControllerCommand(str, Enum):
     START = "START"
     GOAL = "GOAL"
     ERASE = "ERASE"
-    ERASE_EXPLORE_AND_PATH = "ERASE EXPLORE AND PATH"
+    CLEAR = "ERASE EXPLORE AND PATH"
     FILL = "FILL"
 
 
@@ -35,7 +35,7 @@ class MazeController:
             if self._current_command == MazeControllerCommand.ERASE:
                 self._erase_maze()
                 self._current_command = MazeControllerCommand.START
-            if self._current_command == MazeControllerCommand.ERASE_EXPLORE_AND_PATH:
+            if self._current_command == MazeControllerCommand.CLEAR:
                 self._erase_explore_and_path()
             if self._current_command == MazeControllerCommand.FILL:
                 self._fill_maze()
@@ -49,8 +49,8 @@ class MazeController:
             self._current_command = MazeControllerCommand.BLOCK
         if event.key == pygame.K_e:
             self._current_command = MazeControllerCommand.ERASE
-        if event.key == pygame.K_p:
-            self._current_command = MazeControllerCommand.ERASE_EXPLORE_AND_PATH
+        if event.key == pygame.K_c:
+            self._current_command = MazeControllerCommand.CLEAR
         if event.key == pygame.K_f:
             self._current_command = MazeControllerCommand.FILL
 
@@ -74,7 +74,7 @@ class MazeController:
         self._maze.erase_maze()
 
     def _erase_explore_and_path(self):
-        self._maze.erase_explore_and_path()
+        self._maze.clear_maze()
         self._current_command = MazeControllerCommand.BLOCK
 
     def _fill_maze(self):

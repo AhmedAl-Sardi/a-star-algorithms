@@ -115,11 +115,19 @@ class Maze:
         self._grid = [[Colors.WHITE for _ in range(self._columns)]
                       for _ in range(self._rows)]
 
-    def erase_explore_and_path(self):
+    def clear_maze(self):
         for i, row in enumerate(self._grid):
             for j, value in enumerate(row):
                 if value == Colors.EXPLORE or value == Colors.PATH:
                     self._grid[i][j] = Colors.WHITE
+
+    def fill_random(self, spread: float = 0.2):
+        for i, row in enumerate(self._grid):
+            for j, value in enumerate(row):
+                if value == Colors.WHITE and random.uniform(0, 1) < spread:
+                    self._grid[i][j] = Colors.BLACK
+                    self.draw()
+                    pygame.display.update()
 
     def _draw_horizontal_line(self):
         # Draw Horizontal Line
@@ -162,11 +170,3 @@ class Maze:
         if 0 <= location.row < self._rows and 0 <= location.column < self._columns:
             return True
         return False
-
-    def fill_random(self, spread: float = 0.2):
-        for i, row in enumerate(self._grid):
-            for j, value in enumerate(row):
-                if value == Colors.WHITE and random.uniform(0, 1) < spread:
-                    self._grid[i][j] = Colors.BLACK
-                    self.draw()
-                    pygame.display.update()
