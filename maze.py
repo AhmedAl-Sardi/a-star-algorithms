@@ -168,3 +168,5 @@ class Maze:
             for j, value in enumerate(row):
                 if value == Colors.WHITE and random.uniform(0, 1) < spread:
                     self._grid[i][j] = Colors.BLACK
+                    self.draw()
+                    pygame.display.update()

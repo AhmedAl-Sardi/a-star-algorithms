@@ -37,6 +37,6 @@ while running:
     maze.draw()
 
     pygame.display.update()
-    clock.tick(60)
+    clock.tick(FPS)
 
 pygame.quit()
