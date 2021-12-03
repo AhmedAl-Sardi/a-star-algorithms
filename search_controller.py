@@ -1,4 +1,4 @@
-from typing import Callable, Union
+from typing import Callable, Union, List, Dict
 
 import pygame
 
@@ -13,7 +13,7 @@ class SearchController:
     def __init__(self, maze: Maze, display_surface: pygame.Surface):
         self._maze = maze
         self.display_surface = display_surface
-        self._heuristic: Callable[[MazeLocation], Callable[[MazeLocation], float]] = euclidean_distance
+        self._heuristic: Callable[[MazeLocation], Callable[[MazeLocation], float]] = manhattan_distance
         self._font = pygame.font.SysFont("roboto", 20)
         self._a_star: Union[AStar, None] = None
 
@@ -54,6 +54,8 @@ class SearchController:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_r:
                     self._run_search()
+                if event.key == pygame.K_p:
+                    self._run_performance_search()
             if event.type == pygame.MOUSEBUTTONUP:
                 if self._manhattan_rect.collidepoint(event.pos):
                     self._heuristic = manhattan_distance
@@ -119,3 +121,24 @@ class SearchController:
 
     def _diagonal_color(self):
         return Colors.START if self._diagonal_movement else Colors.WHITE
+
+    def _run_performance_search(self):
+        heuristics: List[Callable] = [euclidean_distance, manhattan_distance, chebyshev_distance]
+        results: Dict[str, List] = {}
+        self._maze.erase_maze()
+        self._maze.start = MazeLocation(350, 402)
+        self._maze.goal = MazeLocation(1190, 790)
+        self._maze.fill_random()
+        for heuristic in heuristics:
+            heuristic_name: str = heuristic.__name__.replace("_", " ").title()
+            results[heuristic_name] = []
+            heuristic = heuristic(self._maze.goal)
+            for i in range(10):
+                self._a_star = AStar(heuristic=heuristic, successor=self._maze.successor,
+                                     goal_check=self._maze.check_goal,
+                                     start=self._maze.start, maze=self._maze,
+                                     allow_diagonal=False)
+                self._a_star.start()
+                results[heuristic_name].append((self._a_star.time, self._a_star.len_of_path))
+                self._maze.clear_maze()
+        print(results)

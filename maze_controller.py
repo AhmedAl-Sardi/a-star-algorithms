@@ -36,7 +36,7 @@ class MazeController:
                 self._erase_maze()
                 self._current_command = MazeControllerCommand.START
             if self._current_command == MazeControllerCommand.CLEAR:
-                self._erase_explore_and_path()
+                self._clear_path()
             if self._current_command == MazeControllerCommand.FILL:
                 self._fill_maze()
 
@@ -73,7 +73,7 @@ class MazeController:
     def _erase_maze(self):
         self._maze.erase_maze()
 
-    def _erase_explore_and_path(self):
+    def _clear_path(self):
         self._maze.clear_maze()
         self._current_command = MazeControllerCommand.BLOCK
 
