@@ -1,6 +1,5 @@
 import time
-from collections import Callable
-from typing import Dict, List, Union
+from typing import Dict, List, Union, Callable
 
 import pygame
 
@@ -53,12 +52,12 @@ class AStar:
 
     def _search(self) -> Union[Node, None]:
         # A*
-        fringe: PriorityQueue = PriorityQueue()
+        frontier: PriorityQueue = PriorityQueue()
         start = Node(location=self._start, parent=None, cost=0, heuristic=self._heuristic(self._start))
-        fringe.push(start)
+        frontier.push(start)
         explored: Dict[Location, int] = {self._start: 0}
-        while not fringe.empty:
-            current_node: Node = fringe.pop()
+        while not frontier.empty:
+            current_node: Node = frontier.pop()
             current_location: Location = current_node.location
             # update the screen
             self._maze.mark(location=current_location, color=Cell.EXPLORE)
@@ -69,8 +68,8 @@ class AStar:
             for child in self._successor(current_location, self._allow_diagonal):
                 new_cost = current_node.cost + 1
                 if child not in explored or explored[child] > new_cost:
-                    fringe.push(Node(location=child, parent=current_node,
-                                     cost=new_cost, heuristic=self._heuristic(child)))
+                    frontier.push(Node(location=child, parent=current_node,
+                                       cost=new_cost, heuristic=self._heuristic(child)))
                     explored[child] = new_cost
         return None
 

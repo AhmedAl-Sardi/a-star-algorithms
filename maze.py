@@ -7,6 +7,10 @@ from utils import Cell, Location
 
 
 class Maze:
+    """
+    Representing Maze in pygame
+    """
+
     def __init__(self, rows: int, columns: int,
                  grid_size: int, x_offset: int, y_offset: int,
                  display_surface: pygame.Surface,
@@ -80,12 +84,12 @@ class Maze:
 
     @start.setter
     def start(self, location: Location):
-        start: Location = self._normalize_location(location=location)
-        # Todo: Check for boundary before assign
+        start: Location = self._normalize_location(location=location)  # Location will
+        # Check the boundary before assign
         if not self._check_boundary(location=start):
             return None
         self._start = start
-        # Todo: check if there are start point in grid before adding the new one
+        # check if there are start point in grid before adding the new one
         self._change_location_state(from_state=Cell.START, to=Cell.WHITE)
         self._grid[self._start.row][self._start.column] = Cell.START
 
@@ -96,7 +100,7 @@ class Maze:
     @goal.setter
     def goal(self, location: Location):
         goal: Location = self._normalize_location(location=location)
-        # Todo: check for boundary before assign
+        # check for boundary before assign
         if not self._check_boundary(location=goal):
             return None
         self._goal = goal
@@ -105,7 +109,7 @@ class Maze:
 
     def block(self, location: Location, to: Cell = Cell.BLOCK):
         block: Location = self._normalize_location(location=location)
-        # Todo: check for boundary before assign
+        # check for boundary before assign
         if not self._check_boundary(location=block):
             return None
         if self._grid[block.row][block.column] == Cell.WHITE or self._grid[block.row][block.column] == Cell.BLOCK:

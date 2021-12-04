@@ -54,8 +54,8 @@ class SearchController:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_r:
                     self._run_search()
-                if event.key == pygame.K_p:
-                    self._run_performance_search()
+                # if event.key == pygame.K_p:
+                # self._run_performance_search()
             if event.type == pygame.MOUSEBUTTONUP:
                 if self._manhattan_rect.collidepoint(event.pos):
                     self._heuristic = manhattan_distance
