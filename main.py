@@ -3,7 +3,7 @@ import pygame
 from maze import Maze
 from maze_controller import MazeController
 from search_controller import SearchController
-from utils import Colors
+from utils import Cell
 
 # init
 
@@ -32,7 +32,7 @@ while running:
     search_controller.update(events=events)
     maze_controller.update(events=events)
 
-    display_surface.fill(Colors.WHITE)
+    display_surface.fill(Cell.WHITE)
     search_controller.draw()
     maze.draw()
 

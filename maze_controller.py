@@ -3,7 +3,7 @@ from enum import Enum
 import pygame
 
 from maze import Maze
-from utils import MazeLocation, Colors
+from utils import Location, Cell
 
 
 class MazeControllerCommand(str, Enum):
@@ -57,18 +57,18 @@ class MazeController:
     def _check_for_start_point(self, event: pygame.event):
         # press 's' and mouse click, then add start point to maze
         if event.type == pygame.MOUSEBUTTONUP:
-            self._maze.start = (MazeLocation(row=event.pos[0], column=event.pos[1]))
+            self._maze.start = (Location(row=event.pos[0], column=event.pos[1]))
 
     def _check_for_goal_point(self, event: pygame.event):
         # press 'g' and mouse click, then add goal point to maze
         if event.type == pygame.MOUSEBUTTONUP:
-            self._maze.goal = (MazeLocation(row=event.pos[0], column=event.pos[1]))
+            self._maze.goal = (Location(row=event.pos[0], column=event.pos[1]))
 
     def _check_for_block_point(self, event: pygame.event):
         if event.type == pygame.MOUSEMOTION and event.buttons[0]:
-            self._maze.block(location=MazeLocation(event.pos[0], column=event.pos[1]))
+            self._maze.block(location=Location(event.pos[0], column=event.pos[1]))
         if event.type == pygame.MOUSEBUTTONUP:
-            self._maze.block(location=MazeLocation(row=event.pos[0], column=event.pos[1]), to=Colors.WHITE)
+            self._maze.block(location=Location(row=event.pos[0], column=event.pos[1]), to=Cell.WHITE)
 
     def _erase_maze(self):
         self._maze.erase_maze()

@@ -7,16 +7,16 @@ import pygame
 from maze import Maze
 from utils import (PriorityQueue, Node,
                    path_to_node,
-                   MazeLocation, Colors)
+                   Location, Cell)
 
 
 class AStar:
-    def __init__(self, heuristic: Callable[[MazeLocation], float],
-                 successor: Callable[[MazeLocation, bool], List[MazeLocation]],
-                 goal_check: Callable[[MazeLocation], bool],
-                 start: MazeLocation, maze: Maze,
+    def __init__(self, heuristic: Callable[[Location], float],
+                 successor: Callable[[Location, bool], List[Location]],
+                 goal_check: Callable[[Location], bool],
+                 start: Location, maze: Maze,
                  allow_diagonal: bool):
-        self._heuristic: Callable[[MazeLocation], float] = heuristic
+        self._heuristic: Callable[[Location], float] = heuristic
         self._successor = successor
         self._goal_check = goal_check
         self._start = start
@@ -44,10 +44,10 @@ class AStar:
         if not self._solution:
             print("No solution found")
             return
-        paths: List[MazeLocation] = path_to_node(self._solution)
+        paths: List[Location] = path_to_node(self._solution)
         self._len_of_path = len(paths)
         for location in paths:
-            self._maze.mark(location=location, color=Colors.PATH)
+            self._maze.mark(location=location, color=Cell.PATH)
             self._maze.draw()
             pygame.display.update()
 
@@ -56,12 +56,12 @@ class AStar:
         fringe: PriorityQueue = PriorityQueue()
         start = Node(location=self._start, parent=None, cost=0, heuristic=self._heuristic(self._start))
         fringe.push(start)
-        explored: Dict[MazeLocation, int] = {self._start: 0}
+        explored: Dict[Location, int] = {self._start: 0}
         while not fringe.empty:
             current_node: Node = fringe.pop()
-            current_location: MazeLocation = current_node.location
+            current_location: Location = current_node.location
             # update the screen
-            self._maze.mark(location=current_location, color=Colors.EXPLORE)
+            self._maze.mark(location=current_location, color=Cell.EXPLORE)
             self._maze.draw()
             pygame.display.update()
             if self._goal_check(current_location):

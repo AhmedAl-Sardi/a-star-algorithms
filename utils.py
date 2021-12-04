@@ -6,13 +6,13 @@ from math import sqrt
 from typing import Tuple, Callable, List, NamedTuple
 
 
-class MazeLocation(NamedTuple):
+class Location(NamedTuple):
     row: int
     column: int
 
 
-class Colors(Tuple, Enum):
-    BLACK = (41, 41, 41)
+class Cell(Tuple, Enum):
+    BLOCK = (41, 41, 41)
     WHITE = (245, 245, 245)
     GARY = (220, 220, 220)
     PATH = (119, 214, 140)
@@ -37,7 +37,7 @@ class PriorityQueue:
 
 
 class Node:
-    def __init__(self, location: MazeLocation, parent: Node, cost: int, heuristic: float):
+    def __init__(self, location: Location, parent: Node, cost: int, heuristic: float):
         self.location = location
         self.parent = parent
         self.cost = cost
@@ -50,22 +50,22 @@ class Node:
         return f"{self.location}: {self.cost + self.heuristic}"
 
 
-def euclidean_distance(goal: MazeLocation) -> Callable[[MazeLocation], float]:
-    def distance(location: MazeLocation):
+def euclidean_distance(goal: Location) -> Callable[[Location], float]:
+    def distance(location: Location):
         return sqrt((goal.row - location.row) ** 2 + (goal.column - location.column) ** 2)
 
     return distance
 
 
-def manhattan_distance(goal: MazeLocation) -> Callable[[MazeLocation], float]:
-    def distance(location: MazeLocation):
+def manhattan_distance(goal: Location) -> Callable[[Location], float]:
+    def distance(location: Location):
         return abs(goal.row - location.row) + abs(goal.column - location.column)
 
     return distance
 
 
-def chebyshev_distance(goal: MazeLocation) -> Callable[[MazeLocation], float]:
-    def distance(location: MazeLocation):
+def chebyshev_distance(goal: Location) -> Callable[[Location], float]:
+    def distance(location: Location):
         """
         D * (dx + dy) + (D2 - 2 * D) * min(dx, dy)
         D and D2 are cost, which in our case is 1
@@ -79,8 +79,8 @@ def chebyshev_distance(goal: MazeLocation) -> Callable[[MazeLocation], float]:
     return distance
 
 
-def path_to_node(node: Node) -> List[MazeLocation]:
-    path: List[MazeLocation] = []
+def path_to_node(node: Node) -> List[Location]:
+    path: List[Location] = []
     while node is not None:
         path.append(node.location)
         node = node.parent
