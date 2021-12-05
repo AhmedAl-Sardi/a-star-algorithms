@@ -104,6 +104,7 @@ class SearchController:
         self.display_surface.blit(self._length_of_path_text, self._length_of_path_rect)
 
     def _run_search(self):
+        # self._maze.goal = Location()
         if not self._can_run():
             print("Enter maze value first")
             return

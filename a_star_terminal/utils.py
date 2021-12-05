@@ -89,15 +89,9 @@ def manhattan_distance(goal: Location) -> Callable[[Location], float]:
 
 def chebyshev_distance(goal: Location) -> Callable[[Location], float]:
     def distance(location: Location):
-        """
-        D * (dx + dy) + (D2 - 2 * D) * min(dx, dy)
-        D and D2 are cost, which in our case is 1
-        :param location:
-        :return: float
-        """
         dx = abs(goal.row - location.row)
         dy = abs(goal.column - location.column)
-        return (dx + dy) + (-1) * min(dx, dy)
+        return max(dx, dy)
 
     return distance
 
